@@ -8,7 +8,7 @@
 #
 
 # Download and untar/unzip the specified package in the /tmp/deploynow/cookbooks dir
-node["deploynowpackages"]["deployNowpackages"].each do |package|
+node["deploynowpackages"]["packages"].each do |package|
 
   unless package.is_a? Hash
     raise "DeployNow : Package [#{package}] is required to be a hash"
