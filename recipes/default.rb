@@ -14,12 +14,20 @@ node["deploynowpackages"]["packages"].each do |package|
     raise "DeployNow : Package [#{package}] is required to be a hash"
   end
 
-  if not package.has_key? "download_url"
-    raise "DeployNow : Package [#{package}] has no 'download_url'"
+  if not package.has_key? "download_url_linux"
+    raise "DeployNow : Package [#{package}] has no 'download_url_linux'"
   end
 
-  if not package.has_key? "zip_file_name"
-    raise "DeployNow : Package [#{package}] has no 'zip_file_name'"
+  if not package.has_key? "download_url_windows"
+    raise "DeployNow : Package [#{package}] has no 'download_url_windows'"
+  end
+
+  if not package.has_key? "zip_file_name_linux"
+    raise "DeployNow : Package [#{package}] has no 'zip_file_name_linux'"
+  end
+
+  if not package.has_key? "zip_file_name_windows"
+    raise "DeployNow : Package [#{package}] has no 'zip_file_name_windows'"
   end
 
   if not package.has_key? "unzipped_name"
@@ -35,18 +43,37 @@ node["deploynowpackages"]["packages"].each do |package|
     action :create
   end
 
-  package_download_file = "#{node['deploynowpackages']['packages_home']}#{package['zip_file_name']}"
+	actual_download_url = ""
+	if platform?('windows')
+		package_download_file = "#{node['deploynowpackages']['packages_home']}#{package['zip_file_name_windows']}"
+		actual_download_url = package['download_url_windows']
+	else
+		package_download_file = "#{node['deploynowpackages']['packages_home']}#{package['zip_file_name_linux']}"
+		actual_download_url = package['download_url_linux']
+	end
+
   remote_file package_download_file do
-    source package['download_url']
+    source actual_download_url
     mode '0755'
   end
 
-  bash 'extract_package' do
-    code <<-EOH
-      cd #{node["deploynowpackages"]["packages_home"]}
-      tar -zxf #{package['zip_file_name']}
-      mv #{package['unzipped_name']} #{package['package_name']}
-    EOH
-  end
-
+	if platform?('windows')
+		windows_zipfile "#{node['deploynowpackages']['packages_home']}cookbooks" do
+			source package_download_file
+			action :unzip
+		end
+		batch 'echo some env vars' do
+		code <<-EOH
+				rename #{node['deploynowpackages']['packages_home']}#{package['unzipped_name']} #{node['deploynowpackages']['packages_home']}#{package['package_name']}
+			EOH
+		end
+	else
+		bash 'extract_package' do
+			code <<-EOH
+				cd #{node["deploynowpackages"]["packages_home"]}
+				tar -zxf #{package['zip_file_name']}
+				mv #{package['unzipped_name']} #{package['package_name']}
+			EOH
+		end
+	end
 end
