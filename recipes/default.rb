@@ -61,11 +61,18 @@ node["deploynowpackages"]["packages"].each do |package|
 	end
 
 	if platform?('windows')
-		windows_zipfile "#{node['deploynowpackages']['packages_home_win']}#{package['unzipped_name']}" do
-			source package_download_file
-			action :unzip
-		end
-		batch 'echo some env vars' do
+		powershell_script 'unzip package' do
+  		code <<-EOH
+	 			$shell = new-object -com shell.application
+	  			$zip = $shell.NameSpace("#{package_download_file}")
+	  			foreach($item in $zip.items())
+	  			{
+	  			$shell.Namespace("#{node['deploynowpackages']['packages_home_win']}").copyhere($item)
+	  			}
+	  		EOH
+		end	
+
+		batch 'renaming unzipped files' do
 		code <<-EOH
 				rename #{node['deploynowpackages']['packages_home_win']}#{package['unzipped_name']} #{package['package_name']}
 			EOH
