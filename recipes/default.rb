@@ -41,16 +41,16 @@ node["deploynowpackages"]["packages"].each do |package|
 	actual_download_url = ""
 	if platform?('windows')
 		directory node['deploynowpackages']['packages_home_win'] do
-					mode '0755'
-					action :create
-			end
+			mode '0755'
+			action :create
+		end
 		package_download_file = "#{node['deploynowpackages']['packages_home_win']}#{package['zip_file_name_windows']}"
 		actual_download_url = package['download_url_windows']
 	else
 		directory node['deploynowpackages']['packages_home_linux'] do
-					mode '0755'
-					action :create
-			end
+			mode '0755'
+			action :create
+		end
 		package_download_file = "#{node['deploynowpackages']['packages_home_linux']}#{package['zip_file_name_linux']}"
 		actual_download_url = package['download_url_linux']
 	end
