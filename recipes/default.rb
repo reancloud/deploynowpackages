@@ -58,13 +58,13 @@ node["deploynowpackages"]["packages"].each do |package|
   end
 
 	if platform?('windows')
-		windows_zipfile "#{node['deploynowpackages']['packages_home']}cookbooks" do
+		windows_zipfile "#{node['deploynowpackages']['packages_home']}#{package['unzipped_name']}" do
 			source package_download_file
 			action :unzip
 		end
 		batch 'echo some env vars' do
 		code <<-EOH
-				rename #{node['deploynowpackages']['packages_home']}#{package['unzipped_name']} #{node['deploynowpackages']['packages_home']}#{package['package_name']}
+				rename #{node['deploynowpackages']['packages_home']}#{package['unzipped_name']} #{package['package_name']}
 			EOH
 		end
 	else
