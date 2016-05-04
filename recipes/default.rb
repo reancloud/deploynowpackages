@@ -81,7 +81,7 @@ node["deploynowpackages"]["packages"].each do |package|
 		bash 'extract_package' do
 			code <<-EOH
 				cd #{node["deploynowpackages"]["packages_home_linux"]}
-				tar -zxf #{package['zip_file_name']}
+				tar -zxf #{package['zip_file_name_linux']}
 				mv #{package['unzipped_name']} #{package['package_name']}
 			EOH
 		end
