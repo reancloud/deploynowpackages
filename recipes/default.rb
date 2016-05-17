@@ -15,13 +15,13 @@ node["deploynowpackages"]["packages"].each do |package|
   end
 
   if not package.has_key? "download_url"
-    raise "DeployNow : Package [#{package}] has no 'download_url_linux'"
+    raise "DeployNow : Package [#{package}] has no 'download_url'"
   end
 
  
 
   if not package.has_key? "zip_file_name"
-    raise "DeployNow : Package [#{package}] has no 'zip_file_name_linux'"
+    raise "DeployNow : Package [#{package}] has no 'zip_file_name'"
   end
 
  
