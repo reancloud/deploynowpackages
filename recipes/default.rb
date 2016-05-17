@@ -14,22 +14,17 @@ node["deploynowpackages"]["packages"].each do |package|
     raise "DeployNow : Package [#{package}] is required to be a hash"
   end
 
-  if not package.has_key? "download_url_linux"
+  if not package.has_key? "download_url"
     raise "DeployNow : Package [#{package}] has no 'download_url_linux'"
   end
 
-  if not package.has_key? "download_url_windows"
-    raise "DeployNow : Package [#{package}] has no 'download_url_windows'"
-  end
+ 
 
-  if not package.has_key? "zip_file_name_linux"
+  if not package.has_key? "zip_file_name"
     raise "DeployNow : Package [#{package}] has no 'zip_file_name_linux'"
   end
 
-  if not package.has_key? "zip_file_name_windows"
-    raise "DeployNow : Package [#{package}] has no 'zip_file_name_windows'"
-  end
-
+ 
   if not package.has_key? "unzipped_name"
     raise "DeployNow : Package [#{package}] has no 'unzipped_name'"
   end
@@ -44,15 +39,15 @@ node["deploynowpackages"]["packages"].each do |package|
 			mode '0755'
 			action :create
 		end
-		package_download_file = "#{node['deploynowpackages']['packages_home_win']}#{package['zip_file_name_windows']}"
-		actual_download_url = package['download_url_windows']
+		package_download_file = "#{node['deploynowpackages']['packages_home_win']}#{package['zip_file_name']}"
+		actual_download_url = package['download_url']
 	else
 		directory node['deploynowpackages']['packages_home_linux'] do
 			mode '0755'
 			action :create
 		end
-		package_download_file = "#{node['deploynowpackages']['packages_home_linux']}#{package['zip_file_name_linux']}"
-		actual_download_url = package['download_url_linux']
+		package_download_file = "#{node['deploynowpackages']['packages_home_linux']}#{package['zip_file_name']}"
+		actual_download_url = package['download_url']
 	end
 
 	remote_file package_download_file do
@@ -63,25 +58,18 @@ node["deploynowpackages"]["packages"].each do |package|
 	if platform?('windows')
 		powershell_script 'unzip package' do
   		code <<-EOH
-	 			$shell = new-object -com shell.application
-	  			$zip = $shell.NameSpace("#{package_download_file}")
-	  			foreach($item in $zip.items())
-	  			{
-	  			$shell.Namespace("#{node['deploynowpackages']['packages_home_win']}").copyhere($item)
-	  			}
+	 			cd #{node["deploynowpackages"]["packages_home_win"]}
+				tar -zxf #{package['zip_file_name']}
+				mv #{package['unzipped_name']} #{package['package_name']}
 	  		EOH
 		end	
 
-		batch 'renaming unzipped files' do
-		code <<-EOH
-				rename #{node['deploynowpackages']['packages_home_win']}#{package['unzipped_name']} #{package['package_name']}
-			EOH
-		end
+		
 	else
 		bash 'extract_package' do
 			code <<-EOH
 				cd #{node["deploynowpackages"]["packages_home_linux"]}
-				tar -zxf #{package['zip_file_name_linux']}
+				tar -zxf #{package['zip_file_name']}
 				mv #{package['unzipped_name']} #{package['package_name']}
 			EOH
 		end
