@@ -52,6 +52,7 @@ node["deploynowpackages"]["packages"].each do |package|
 
 	remote_file package_download_file do
 		source actual_download_url
+		headers( "Authorization"=>"Basic #{ Base64.encode64("#node['deploynowpackages']['deploynow_username']:#node['deploynowpackages']['deploynow_password']").gsub("\n", "") }" )
 		mode '0755'
 	end
 
