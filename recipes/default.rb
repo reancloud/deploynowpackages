@@ -18,8 +18,6 @@ node["deploynowpackages"]["packages"].each do |package|
     raise "DeployNow : Package [#{package}] has no 'download_url'"
   end
 
- 
-
   if not package.has_key? "zip_file_name"
     raise "DeployNow : Package [#{package}] has no 'zip_file_name'"
   end
@@ -52,7 +50,7 @@ node["deploynowpackages"]["packages"].each do |package|
 
 	remote_file package_download_file do
 		source actual_download_url
-		headers( "Authorization"=>"Basic #{ Base64.encode64("#{node['deploynowpackages']['deploynow_username']}:#{node['deploynowpackages']['deploynow_password']}").gsub("\n", "") }" )
+		headers("PRIVATE-TOKEN" =>"#{package['private_access_token']}")
 		mode '0755'
 	end
 
