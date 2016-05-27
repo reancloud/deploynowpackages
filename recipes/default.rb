@@ -14,8 +14,8 @@ node["deploynowpackages"]["packages"].each do |package|
     raise "DeployNow : Package [#{package}] is required to be a hash"
   end
 
-  if not package.has_key? "download_url_linux"
-    raise "DeployNow : Package [#{package}] has no 'download_url_linux'"
+  if not package.has_key? "download_url"
+    raise "DeployNow : Package [#{package}] has no 'download_url'"
   end
 
   if not package.has_key? "zip_file_name"
