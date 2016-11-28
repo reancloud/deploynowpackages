@@ -48,10 +48,18 @@ node["deploynowpackages"]["packages"].each do |package|
 		actual_download_url = package['download_url']
 	end
 
-	remote_file package_download_file do
-		source actual_download_url
-		headers("PRIVATE-TOKEN" =>"#{package['private_access_token']}")
-		mode '0755'
+	if actual_download_url.include? "github.com"
+		remote_file package_download_file do
+			source actual_download_url+"?access_token=#{package['private_access_token']}"
+			headers("Accept" => "application/octet-stream")
+			mode '0755'
+		end
+	else
+		remote_file package_download_file do
+			source actual_download_url
+			headers("PRIVATE-TOKEN" =>"#{package['private_access_token']}")
+			mode '0755'
+		end
 	end
 
 	if platform?('windows')
