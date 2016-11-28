@@ -1,4 +1,4 @@
-deploynowpackages Cookbook
+deploynowpackages Cookbook [Github]
 =====================
 Cookbook to get the other packages as per the given URL. 
 Extract the tar.gz and then rename to correct name
