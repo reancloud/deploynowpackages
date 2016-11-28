@@ -48,7 +48,7 @@ node["deploynowpackages"]["packages"].each do |package|
 		actual_download_url = package['download_url']
 	end
 
-	if actual_download_url.include? "github.com"
+	if actual_download_url.include? "github.com" and package['private_access_token'] != ""
 		remote_file package_download_file do
 			source actual_download_url+"?access_token=#{package['private_access_token']}"
 			headers("Accept" => "application/octet-stream")
