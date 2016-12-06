@@ -49,11 +49,11 @@ node["deploynowpackages"]["packages"].each do |package|
 	end
 
 	if actual_download_url.include? "github.com" and package['private_access_token'] != ""
-		remote_file package_download_file do
-			source actual_download_url+"?access_token=#{package['private_access_token']}"
-			headers("Accept" => "application/octet-stream")
-			mode '0755'
-		end
+		bash 'download_archive' do
+            code <<-EOH
+            curl -u #{package['private_access_token']}:x-oauth-basic -sL #{actual_download_url} >  #{package_download_file}
+                EOH
+        end
 	else
 		remote_file package_download_file do
 			source actual_download_url
