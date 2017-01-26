@@ -82,3 +82,4 @@ node["deploynowpackages"]["packages"].each do |package|
 		end
 	end
 end
+include_recipe 'deploynowpackages::git'
