@@ -48,7 +48,15 @@ node["deploynowpackages"]["packages"].each do |package|
 		actual_download_url = package['download_url']
 	end
 
-	if actual_download_url.include? "github.com" and package['private_access_token'] != ""
+	if package['private_access_token'] != "null" 
+        http = actual_download_url.split('://')[0]
+		repo_url = actual_download_url.split('://')[1]
+		rewrite_url=["#{http}",'://',"#{package['private_access_token']}",'@',"#{repo_url}"].join
+	else
+	   rewrite_url = actual_download_url
+	end
+
+	if actual_download_url.include? "github.com" and package['private_access_token'] != "" and node['platform'] != 'windows'
 		bash 'download_archive' do
             code <<-EOH
             curl -u #{package['private_access_token']}:x-oauth-basic -sL #{actual_download_url} >  #{package_download_file}
@@ -56,8 +64,7 @@ node["deploynowpackages"]["packages"].each do |package|
         end
 	else
 		remote_file package_download_file do
-			source actual_download_url
-			headers("PRIVATE-TOKEN" =>"#{package['private_access_token']}")
+			source rewrite_url
 			mode '0755'
 		end
 	end
