@@ -47,27 +47,25 @@ node["deploynowpackages"]["packages"].each do |package|
 		package_download_file = "#{node['deploynowpackages']['packages_home_linux']}#{package['zip_file_name']}"
 		actual_download_url = package['download_url']
 	end
-
+	header_params={}
 	if package['private_access_token'] != "null" 
-        http = actual_download_url.split('://')[0]
+		http = actual_download_url.split('://')[0]
 		repo_url = actual_download_url.split('://')[1]
 		rewrite_url="#{http}://#{package['private_access_token']}@#{repo_url}"
+		if actual_download_url.include? 'gitlab.com'
+			header_params['PRIVATE-TOKEN'] = package['private_access_token']
+			rewrite_url= actual_download_url
+		end
 	else
-	   rewrite_url = actual_download_url
+		rewrite_url = actual_download_url
 	end
 
-	if package['private_access_token'] != "null" and node['platform'] != 'windows'
-		bash 'download_archive' do
-            code <<-EOH
-            curl -u #{package['private_access_token']}:x-oauth-basic -sL #{actual_download_url} >  #{package_download_file}
-                EOH
-        end
-	else
-		remote_file package_download_file do
-			source rewrite_url
-			mode '0755'
-		end
+	remote_file package_download_file do
+		source rewrite_url
+		headers header_params
+		mode '0755'
 	end
+
 
 	if platform?('windows')
 		powershell_script 'unzip package' do
