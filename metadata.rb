@@ -1,6 +1,6 @@
 name             'deploynowpackages'
-maintainer       'Opex Software'
-maintainer_email 'gg@opexsoftware.com'
+maintainer       'REAN CLOUD'
+maintainer_email 'gg@reancloud.com'
 license          'All rights reserved'
 description      'Installs/Configures deploynow packages'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))

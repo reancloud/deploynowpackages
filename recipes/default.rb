@@ -2,7 +2,7 @@
 # Cookbook Name:: deploynowpackages
 # Recipe:: default
 #
-# Copyright 2015, Opex Software
+# Copyright 2017, REAN CLOUD
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -11,24 +11,24 @@
 node["deploynowpackages"]["packages"].each do |package|
 
   unless package.is_a? Hash
-    raise "DeployNow : Package [#{package}] is required to be a hash"
+    raise "REAN Deploy : Package [#{package}] is required to be a hash"
   end
 
   if not package.has_key? "download_url"
-    raise "DeployNow : Package [#{package}] has no 'download_url'"
+    raise "REAN Deploy : Package [#{package}] has no 'download_url'"
   end
 
   if not package.has_key? "zip_file_name"
-    raise "DeployNow : Package [#{package}] has no 'zip_file_name'"
+    raise "REAN Deploy : Package [#{package}] has no 'zip_file_name'"
   end
 
  
   if not package.has_key? "unzipped_name"
-    raise "DeployNow : Package [#{package}] has no 'unzipped_name'"
+    raise "REAN Deploy : Package [#{package}] has no 'unzipped_name'"
   end
 
   if not package.has_key? "package_name"
-    raise "DeployNow : Package [#{package}] has no 'package_name'"
+    raise "REAN Deploy : Package [#{package}] has no 'package_name'"
   end
  
 	actual_download_url = ""
@@ -51,12 +51,12 @@ node["deploynowpackages"]["packages"].each do |package|
 	if package['private_access_token'] != "null" 
         http = actual_download_url.split('://')[0]
 		repo_url = actual_download_url.split('://')[1]
-		rewrite_url=["#{http}",'://',"#{package['private_access_token']}",'@',"#{repo_url}"].join
+		rewrite_url="#{http}://#{package['private_access_token']}@#{repo_url}"
 	else
 	   rewrite_url = actual_download_url
 	end
 
-	if actual_download_url.include? "github.com" and package['private_access_token'] != "" and node['platform'] != 'windows'
+	if package['private_access_token'] != "null" and node['platform'] != 'windows'
 		bash 'download_archive' do
             code <<-EOH
             curl -u #{package['private_access_token']}:x-oauth-basic -sL #{actual_download_url} >  #{package_download_file}
