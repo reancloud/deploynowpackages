@@ -7,27 +7,26 @@ Sample
 ------------------
 ```sh
 {
-"deploynowpackages":  { 
-	"packages" : 
-	[
-        {
-        "download_url":"https://github.com/opexsw/serf/archive/0.9.0.tar.gz",
-        "zip_file_name":"serf-0.9.0.tar.gz",
-        "unzipped_name":"serf-0.9.0",
-        "package_name":"serf"
-        },
-        {
-        "download_url":"https://github.com/opexsw/serf/archive/0.9.0.tar.gz",
-        "zip_file_name":"serf-0.9.0.tar.gz",
-        "unzipped_name":"serf-0.9.0",
-        "package_name":"serf"
-        }
-        ]
-	}
+  "deploynowpackages": {
+    "packages": [
+      {
+        "download_url": "https://github.com/opexsw/serf/archive/0.9.0.tar.gz",
+        "package_name": "serf",
+        "unzipped_name": "serf-0.9.0",
+        "zip_file_name": "serf-0.9.0.tar.gz"
+      },
+      {
+        "download_url": "https://github.com/opexsw/serf/archive/0.9.0.tar.gz",
+        "package_name": "serf",
+        "unzipped_name": "serf-0.9.0",
+        "zip_file_name": "serf-0.9.0.tar.gz"
+      }
+    ]
+  }
 }
 ```
 License and Authors
 -------------------
-License: Owned by Opex Software. Do not copy or use without permission from Opex Software
-Authors: Opex Software
+License: Owned by REAN. Do not copy or use without permission from REAN
+Authors: REAN
 
