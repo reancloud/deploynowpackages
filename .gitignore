@@ -1,0 +1,8 @@
+.idea
+.DS_Store
+.kitchen/
+*.pem
+*.pub
+*_rsa
+desktop.ini
+.kitchen.yml
