@@ -74,7 +74,7 @@ node['deploynowpackages']['packages'].each do |package|
 mv_cmd= ''
 
 if("#{package['unzipped_name']}" != "#{package['package_name']}")
-  mv_cmd = "mv #{package['unzipped_name']} #{package['package_name']}"
+  mv_cmd = "mv -vn #{package['unzipped_name']} #{package['package_name']}"
 end
 
 if platform?('windows')
