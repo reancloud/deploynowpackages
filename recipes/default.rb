@@ -45,18 +45,14 @@ node['deploynowpackages']['packages'].each do |package|
   # I have not seen a blueprint that sets private_access_token to 'null' but I am going to leave this just in case.
   # I am going to add to it to check for a value of null
   if package['private_access_token'] != 'null' && !package['private_access_token'].nil?
-    http = actual_download_url.split('://')[0]
-    repo_url = actual_download_url.split('://')[1]
-    rewrite_url = "#{http}://#{package['private_access_token']}@#{repo_url}"
-
     if actual_download_url.include? 'github.com'
       # The only way I have found to download release tarballs is to use the api.github.com endpoint.
       # will need to be in this form: https://api.github.com/repos/:owner/:repo/tarball/:tag
       # :owner - this is the owner of the repo.  This will likely always be reancloud
       # :repo - name of the github repo
       # :tag - tag of :repo that you wanted downloaded
-      #header_params['Authorization'] = "token #{package['private_access_token']}"
-      rewrite_url = rewrite_url
+      header_params['Authorization'] = "token #{package['private_access_token']}"
+      rewrite_url = actual_download_url
     elsif actual_download_url.include? 'gitlab.com'
       header_params['PRIVATE-TOKEN'] = package['private_access_token']
       rewrite_url = actual_download_url
@@ -74,7 +70,7 @@ node['deploynowpackages']['packages'].each do |package|
 mv_cmd= ''
 
 if("#{package['unzipped_name']}" != "#{package['package_name']}")
-  mv_cmd = "mv -vn #{package['unzipped_name']} #{package['package_name']}"
+  mv_cmd = "mv #{package['unzipped_name']} #{package['package_name']}"
 end
 
 if platform?('windows')
