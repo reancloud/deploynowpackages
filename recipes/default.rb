@@ -77,7 +77,8 @@ if platform?('windows')
     powershell_script 'unzip package' do
       code <<-EOH
         cd #{node['deploynowpackages']['packages_home']}
-        tar -zxf #{package['zip_file_name']}
+        mkdir #{package['unzipped_name']}
+        tar -zxf #{package['zip_file_name']} -C #{package['unzipped_name']} --strip-components=1
         #{mv_cmd}
         EOH
     end 
@@ -87,7 +88,8 @@ if platform?('windows')
     bash 'extract_package' do
       code <<-EOH
         cd #{node['deploynowpackages']['packages_home']}
-        tar -zxf #{package['zip_file_name']}
+        mkdir #{package['unzipped_name']}
+        tar -zxf #{package['zip_file_name']} -C #{package['unzipped_name']} --strip-components=1
         #{mv_cmd}
       EOH
     end
