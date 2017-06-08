@@ -15,7 +15,7 @@ when 'rhel' # rhel, centos, amazon linux
   command = 'yum clean all'
 end
 
-if platform?(!'windows')
+if !platform?('windows')
 execute 'clean repo cache' do
   command command
 end
