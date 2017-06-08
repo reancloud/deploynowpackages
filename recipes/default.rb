@@ -15,15 +15,16 @@ when 'rhel' # rhel, centos, amazon linux
   command = 'yum clean all'
 end
 
-if !platform?('windows')
-execute 'clean repo cache' do
-  command command
+unless node['platform'] == 'windows'
+  execute 'clean repo cache' do
+    command command
+  end
+
+  package 'git' do
+    action :install
+  end
 end
 
-package 'git' do
-  action :install
-end
-end
 # Download and untar/unzip the specified package in the /tmp/deploynow/cookbooks dir
 node['deploynowpackages']['packages'].each do |package|
   raise "REAN Deploy : Package [#{package}] is required to be a hash" unless package.is_a? Hash
@@ -67,13 +68,13 @@ node['deploynowpackages']['packages'].each do |package|
     mode '0755'
   end
 
-mv_cmd= ''
+  mv_cmd = ''
 
-if("#{package['unzipped_name']}" != "#{package['package_name']}")
-  mv_cmd = "mv #{package['unzipped_name']} #{package['package_name']}"
-end
+  if (package['unzipped_name']).to_s != (package['package_name']).to_s
+    mv_cmd = "mv #{package['unzipped_name']} #{package['package_name']}"
+  end
 
-if platform?('windows')
+  if node['platform'] == 'windows'
     powershell_script 'unzip package' do
       code <<-EOH
         cd #{node['deploynowpackages']['packages_home']}
@@ -81,9 +82,7 @@ if platform?('windows')
         tar -zxf #{package['zip_file_name']} -C #{package['unzipped_name']} --strip-components=1
         #{mv_cmd}
         EOH
-    end 
-
-    
+    end
   else
     bash 'extract_package' do
       code <<-EOH
