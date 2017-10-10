@@ -79,7 +79,7 @@ node['deploynowpackages']['packages'].each do |package|
     powershell_script 'unzip package' do
       code <<-EOH
         cd #{node['deploynowpackages']['packages_home']}
-        mkdir -p #{package['unzipped_name']}
+        mkdir #{package['unzipped_name']}
         tar -zxf #{package['zip_file_name']} -C #{package['unzipped_name']} --strip-components=1
         #{mv_cmd}
         EOH
