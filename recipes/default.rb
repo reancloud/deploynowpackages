@@ -55,11 +55,9 @@ node['deploynowpackages']['packages'].each do |package|
       # :tag - tag of :repo that you wanted downloaded
       header_params['Authorization'] = "token #{package['private_access_token']}"
       rewrite_url = actual_download_url
-      puts "In GitHub"
     when 'gitlab'
       header_params['PRIVATE-TOKEN'] = package['private_access_token']
       rewrite_url = actual_download_url
-      puts "In GitLab"
     end
   else
     rewrite_url = actual_download_url
