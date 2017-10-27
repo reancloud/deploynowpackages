@@ -32,7 +32,7 @@ node['deploynowpackages']['packages'].each do |package|
   raise "REAN Deploy : Package [#{package}] has no 'zip_file_name'" unless package.key? 'zip_file_name'
   raise "REAN Deploy : Package [#{package}] has no 'unzipped_name'" unless package.key? 'unzipped_name'
   raise "REAN Deploy : Package [#{package}] has no 'package_name'" unless package.key? 'package_name'
-
+  raise "REAN Deploy : Package [#{package}] has no 'repo_type'" unless package.key? 'repo_type'
   directory node['deploynowpackages']['packages_home'] do
     mode '0755'
     action :create
@@ -40,13 +40,14 @@ node['deploynowpackages']['packages'].each do |package|
 
   package_download_file = "#{node['deploynowpackages']['packages_home']}#{package['zip_file_name']}"
   actual_download_url = package['download_url']
-
+  repo_type = package['repo_type']
   header_params = {}
 
   # I have not seen a blueprint that sets private_access_token to 'null' but I am going to leave this just in case.
   # I am going to add to it to check for a value of null
   if package['private_access_token'] != 'null' && !package['private_access_token'].nil?
-    if actual_download_url.include? 'github.com'
+    case repo_type
+    	when 'github'
       # The only way I have found to download release tarballs is to use the api.github.com endpoint.
       # will need to be in this form: https://api.github.com/repos/:owner/:repo/tarball/:tag
       # :owner - this is the owner of the repo.  This will likely always be reancloud
@@ -54,7 +55,7 @@ node['deploynowpackages']['packages'].each do |package|
       # :tag - tag of :repo that you wanted downloaded
       header_params['Authorization'] = "token #{package['private_access_token']}"
       rewrite_url = actual_download_url
-    elsif actual_download_url.include? 'gitlab.com'
+    when 'gitlab'
       header_params['PRIVATE-TOKEN'] = package['private_access_token']
       rewrite_url = actual_download_url
     end
@@ -87,7 +88,7 @@ node['deploynowpackages']['packages'].each do |package|
     bash 'extract_package' do
       code <<-EOH
         cd #{node['deploynowpackages']['packages_home']}
-        mkdir #{package['unzipped_name']}
+        mkdir -p #{package['unzipped_name']}
         tar -zxf #{package['zip_file_name']} -C #{package['unzipped_name']} --strip-components=1
         #{mv_cmd}
       EOH
