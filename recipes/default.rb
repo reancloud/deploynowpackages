@@ -13,6 +13,8 @@ when 'debian'
   command = 'apt-get update'
 when 'rhel' # rhel, centos, amazon linux
   command = 'yum clean all'
+when 'amazon'
+  command = 'yum clean all'
 end
 
 unless node['platform'] == 'windows'
