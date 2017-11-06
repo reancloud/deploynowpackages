@@ -21,9 +21,9 @@ unless node['platform'] == 'windows'
   execute 'clean repo cache' do
     command command
   end
-
-  package 'git' do
-    action :install
+  execute 'install git' do
+    command 'yum -y --nogpg install git'
+    only_if { ::Mixlib::ShellOut.new('rpm -q git').run_command.error? }
   end
 end
 
