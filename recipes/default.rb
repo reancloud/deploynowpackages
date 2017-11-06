@@ -20,8 +20,16 @@ unless node['platform'] == 'windows'
     command command
   end
 
-  package 'git' do
-    action :install
+  case node['platform_family']
+  when 'debian'
+    package 'git' do
+      action :install
+    end
+  when 'rhel'
+    execute 'install git' do
+      command 'yum -y --nogpg install git'
+      only_if { ::Mixlib::ShellOut.new('rpm -q git').run_command.error? }
+    end
   end
 end
 
