@@ -58,6 +58,8 @@ node['deploynowpackages']['packages'].each do |package|
     when 'gitlab'
       header_params['PRIVATE-TOKEN'] = package['private_access_token']
       rewrite_url = actual_download_url
+    else
+      rewrite_url = actual_download_url
     end
   else
     rewrite_url = actual_download_url
