@@ -31,15 +31,17 @@ node['deploynowpackages']['packages'].each do |package|
     action :create
   end
 
-unless node['platform'] == 'windows'
+ unless node['platform'] == 'windows'
   execute 'clean repo cache' do
     command command
   end
+ end
  if package['skip_install'] != 'true'
+  puts "In loop*************"
   package 'git' do
     action :install
   end
-end
+ end
   package_download_file = "#{node['deploynowpackages']['packages_home']}#{package['zip_file_name']}"
   actual_download_url = package['download_url']
   repo_type = package['repo_type']
