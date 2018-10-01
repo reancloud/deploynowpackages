@@ -17,6 +17,12 @@ when 'amazon'
   command = 'yum clean all'
 end
 
+unless node['platform'] == 'windows'
+  execute 'clean repo cache' do
+    command command
+  end
+end
+
 # Download and untar/unzip the specified package in the /tmp/deploynow/cookbooks dir
 node['deploynowpackages']['packages'].each do |package|
   raise "REAN Deploy : Package [#{package}] is required to be a hash" unless package.is_a? Hash
@@ -31,17 +37,12 @@ node['deploynowpackages']['packages'].each do |package|
     action :create
   end
 
- unless node['platform'] == 'windows'
-  execute 'clean repo cache' do
-    command command
-  end
-
   if package['skip_install'] != 'true'
    package 'git' do
     action :install
    end
   end
- end
+  
   package_download_file = "#{node['deploynowpackages']['packages_home']}#{package['zip_file_name']}"
   actual_download_url = package['download_url']
   repo_type = package['repo_type']
