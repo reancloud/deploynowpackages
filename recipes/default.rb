@@ -21,10 +21,6 @@ unless node['platform'] == 'windows'
   execute 'clean repo cache' do
     command command
   end
-
-  package 'git' do
-    action :install
-  end
 end
 
 # Download and untar/unzip the specified package in the /tmp/deploynow/cookbooks dir
@@ -35,11 +31,18 @@ node['deploynowpackages']['packages'].each do |package|
   raise "REAN Deploy : Package [#{package}] has no 'unzipped_name'" unless package.key? 'unzipped_name'
   raise "REAN Deploy : Package [#{package}] has no 'package_name'" unless package.key? 'package_name'
   raise "REAN Deploy : Package [#{package}] has no 'repo_type'" unless package.key? 'repo_type'
+  raise "REAN Deploy : Package [#{package}] has no 'skip_install'" unless package.key? 'skip_install'
   directory node['deploynowpackages']['packages_home'] do
     mode '0755'
     action :create
   end
 
+  if package['skip_install'] != 'true'
+   package 'git' do
+    action :install
+   end
+  end
+  
   package_download_file = "#{node['deploynowpackages']['packages_home']}#{package['zip_file_name']}"
   actual_download_url = package['download_url']
   repo_type = package['repo_type']
@@ -63,7 +66,10 @@ node['deploynowpackages']['packages'].each do |package|
     when 'plain'
       header_params['Authorization'] = package['private_access_token']
       rewrite_url = actual_download_url
-    else 
+    when 'artifactory'
+       header_params['X-JFrog-Art-Api'] = package['private_access_token']
+       rewrite_url = actual_download_url
+    else
       rewrite_url = actual_download_url
     end
   else
