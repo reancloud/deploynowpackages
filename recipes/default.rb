@@ -63,6 +63,9 @@ node['deploynowpackages']['packages'].each do |package|
     when 'gitlab'
       header_params['PRIVATE-TOKEN'] = package['private_access_token']
       rewrite_url = actual_download_url
+    when 'plain'
+      header_params['Authorization'] = package['private_access_token']
+      rewrite_url = actual_download_url
     when 'artifactory'
        header_params['X-JFrog-Art-Api'] = package['private_access_token']
        rewrite_url = actual_download_url
