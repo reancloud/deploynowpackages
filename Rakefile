@@ -1,0 +1,1 @@
+load 'pipeline-tasks/rake/artifact/chef-cookbook.rake'
