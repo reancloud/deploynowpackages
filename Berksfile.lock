@@ -1,0 +1,7 @@
+DEPENDENCIES
+  deploynowpackages
+    path: .
+    metadata: true
+
+GRAPH
+  deploynowpackages (0.2.8)
