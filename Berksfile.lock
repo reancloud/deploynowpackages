@@ -4,4 +4,4 @@ DEPENDENCIES
     metadata: true
 
 GRAPH
-  deploynowpackages (0.2.8)
+  deploynowpackages (0.2.11)
