@@ -6,3 +6,6 @@
 *_rsa
 desktop.ini
 .kitchen.yml
+target
+vendor-cookbooks/
+/.yardoc/
