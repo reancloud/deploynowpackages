@@ -1,6 +1,5 @@
 @Library('reanplatform') _
 
 node {
-    cookbookPipelines.releaseFinish()
+    cookbookPipelines.releaseFinish([:])
 }
-
