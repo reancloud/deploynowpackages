@@ -1,7 +1,5 @@
 @Library('reanplatform') _
 
 node {
-    cookbookPipelines.releaseBuild(
-        name: 'rvm'
-    )
+    cookbookPipelines.releaseBuild()
 }
